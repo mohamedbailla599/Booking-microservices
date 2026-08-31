@@ -145,37 +145,64 @@ Using the CQRS pattern, we cut each business functionality into vertical slices,
 
 ## How to Run
 
-> ### Docker Compose
+### 📋 Prerequisites
 
-Use the command below to run our `infrastructure` with `docker` using the `docker-compose.infrastructure.yaml` file at the root of the app:
-```
+Before running the project, make sure you have the following installed on your machine:
+- **Docker & Docker Compose**: Essential for running the project infrastructure (databases, message brokers, observability stack).
+- **Java Development Kit (JDK) 11**: Required to build and run the Spring Boot microservices.
+- **Maven**: (Optional but recommended) For building the applications. You can also use the included Maven wrapper (`mvnw.cmd` or `./mvnw`).
+- **An IDE**: IntelliJ IDEA, Eclipse, or VS Code. (If using VS Code, the **REST Client** extension is highly recommended for testing APIs).
+
+You can also find a summary of the prerequisites in the [requirements.txt](./requirements.txt) file.
+
+### 1. Start the Infrastructure
+
+The project relies on Docker to start its backing services (PostgreSQL, MongoDB, Redis, RabbitMQ, EventStoreDB, Keycloak, etc.).
+
+Open your terminal in the root of the project and run:
+```bash
 docker-compose -f ./deployments/docker-compose/docker-compose.infrastructure.yaml up -d
 ```
+*(Wait a few minutes for the images to download and the containers to start up fully).*
 
-> ### Build
-To `build` all microservices, run this command in the `root` of each microservice where the `pom.xml` file is located:
+### 2. Build the Microservices
+
+Next, you need to build the `buildingblocks` library and the individual microservices.
+
+Navigate into each of the following directories and run the Maven install command:
+*   `src/buildingblocks`
+*   `src/apigateway`
+*   `src/services/flight`
+*   `src/services/passenger`
+*   `src/services/booking`
+
+**Command to run inside each directory:**
 ```bash
 mvn clean install
 ```
+*(Alternatively, use `.\mvnw.cmd clean install` on Windows or `./mvnw clean install` on Mac/Linux using the provided wrappers).*
 
-> ### Run
-To `run` each microservice, run this command in the `root` of each microservice where the `pom.xml` file is located:
+### 3. Run the Microservices
+
+Once built, you can start the individual services. It's best to open a separate terminal tab/window for each microservice so they run concurrently.
+
+Navigate to each microservice directory (`src/apigateway`, `src/services/flight`, `src/services/passenger`, `src/services/booking`) and run:
 ```bash
 mvn spring-boot:run
 ```
 
-> ### Test
+### 4. Test the APIs
 
-To `test` all microservices, run this command in the `root` of each microservice where the `pom.xml` file is located:
+To run the automated tests for all microservices, execute this command in the `root` of each microservice where the `pom.xml` file is located:
 ```bash
-dotnet test
+mvn test
 ```
 
-> ### Documentation Apis
+### Documentation APIs
 
-Each microservice provides `API documentation` and navigate to `/swagger-ui/index.html` to visit list of endpoints.
+Each microservice provides API documentation. Once a service is running, navigate to `http://localhost:<port>/swagger-ui/index.html` in your browser to visit the list of endpoints.
 
-As part of API testing, I created the [booking.rest](./booking.rest) file which can be run with the [REST Client](https://github.com/Huachao/vscode-restclient) `VSCode plugin`.
+As part of API testing, I created the [booking.rest](./booking.rest) file in the root directory which can be easily run with the [REST Client](https://github.com/Huachao/vscode-restclient) VS Code plugin to send requests to the API Gateway.
 
 # Support
 

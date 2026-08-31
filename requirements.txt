@@ -1,0 +1,4 @@
+Docker
+Docker Compose
+Java Development Kit (JDK) 11
+Maven
